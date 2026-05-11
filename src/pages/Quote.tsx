@@ -39,19 +39,26 @@ export function Quote() {
     setError(null);
 
     try {
-      const response = await fetch("/api/quote", {
+      const body = new URLSearchParams();
+      body.append("form-name", "quote");
+      body.append("subject", `New Quote Request: ${formData.eventType} from ${formData.name}`);
+      body.append("name", formData.name);
+      body.append("email", formData.email);
+      body.append("phone", formData.phone);
+      body.append("date", formData.date);
+      body.append("eventType", formData.eventType);
+      body.append("venue", formData.venue);
+      body.append("services", formData.services.join(", "));
+      body.append("message", formData.message);
+
+      const response = await fetch("/__forms.html", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: body.toString(),
       });
 
       if (!response.ok) {
-        const data = await response.json();
-        // Handle both string errors and Resend error objects
-        const errorMessage = typeof data.error === 'object' ? (data.error.message || JSON.stringify(data.error)) : data.error;
-        throw new Error(errorMessage || "Failed to submit quote request.");
+        throw new Error("Failed to submit quote request. Please try again.");
       }
 
       setSubmitted(true);
@@ -103,7 +110,12 @@ export function Quote() {
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-brand-gray p-8 rounded-none border border-white/5 shadow-2xl relative overflow-hidden">
+      <form name="quote" method="POST" data-netlify="true" netlify-honeypot="bot-field" onSubmit={handleSubmit} className="bg-brand-gray p-8 rounded-none border border-white/5 shadow-2xl relative overflow-hidden">
+        <input type="hidden" name="form-name" value="quote" />
+        <input type="hidden" name="subject" value="New Quote Request from RadiantAV" />
+        <p style={{ display: "none" }}>
+          <label>Don't fill this out: <input name="bot-field" /></label>
+        </p>
         <div className="absolute top-0 right-0 w-32 h-32 bg-brand-cyan/5 blur-[50px] -z-10" />
         
         <AnimatePresence mode="wait">

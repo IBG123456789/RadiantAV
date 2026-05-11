@@ -10,7 +10,6 @@ import { Home } from "./pages/Home";
 import { About } from "./pages/About";
 import { Gallery } from "./pages/Gallery";
 import { Events } from "./pages/Events";
-import { Packages } from "./pages/Packages";
 import { Services } from "./pages/Services";
 import { Quote } from "./pages/Quote";
 import { useEffect } from "react";
